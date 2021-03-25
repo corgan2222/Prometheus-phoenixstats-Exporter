@@ -13,7 +13,7 @@
  */
 // ------------------------------------------------------------------------
 
-require_once 'conf.php';
+require_once 'docker-conf.php';
 require_once 'json_parser.class.php';
 
 $parser = new json_parser();
