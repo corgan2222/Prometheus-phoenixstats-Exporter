@@ -32,14 +32,6 @@ $server_list = (object)[
 		'power_usage' => null,
 		'power_cost' => null,
 		'pool_fee' => null,
-	],
-	'Server_2' => [
-		'hostname' => "server2.example.com",
-		'port' => 3333,
-		'password' => 'server_2_password',
-		'power_usage' => null,
-		'power_cost' => null,
-		'pool_fee' => null,
 	]
 ];
 
