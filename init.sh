@@ -2,8 +2,9 @@
 
 CONF="/var/www/html/docker-conf.php"
 
-echo "Project: PhoenixStats"
-echo "Author:  lnxd"
+echo "Project: Prometheus-phoenixstats"
+echo "Author:  Stefan Knaak"
+echo "original Author: lnxd"
 echo "Base:    Debian Buster"
 echo "Target:  Unraid"
 echo ""
