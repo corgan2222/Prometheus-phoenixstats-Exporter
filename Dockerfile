@@ -1,4 +1,4 @@
-FROM php:7.4.16-apache-buster
+FROM php:7.4.25-apache-buster
 
 COPY * /var/www/html/
 WORKDIR /var/www/html/
