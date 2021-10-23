@@ -1,4 +1,4 @@
-# PhoenixStats for PhoenixMiner-AMD
+#  Prometheus Phoenixstatsp Exporter for PhoenixMiner-AMD
 This is a containerised version of `claymore-phoenixminer-web-stats`, a simple PHP web stats page that utilises the remote monitoring ports (JSON-RPC API) available on PhoenixMiner. It was containerised for use on Unraid but should work on other hosts as well. This container allows you to view the following stats pulled from your miners:
 
 * Global hash rate for all miners
@@ -9,7 +9,6 @@ This is a containerised version of `claymore-phoenixminer-web-stats`, a simple P
 * Per GPU hash rates
 * Per GPU temperatures
 * Per GPU fan percentages
-* Auto Refreshing
    
 ## Support the original developer
 
