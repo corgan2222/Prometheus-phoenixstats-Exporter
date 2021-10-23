@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONF="/var/www/html/docker-conf.php"
+CONF="/var/www/html/metrics/docker-conf.php"
 
 echo "Project: Prometheus-phoenixstats"
 echo "Author:  Stefan Knaak"
@@ -9,13 +9,12 @@ echo "Base:    Debian Buster"
 echo "Target:  Unraid"
 echo ""
 echo "Server:  ${S_NAME}"
-echo "Host:    ${S_HOST}"
-echo "Port:    ${S_PORT}"
+echo "conected: ${S_HOST}:${S_PORT}"
 echo ""
 if test -f $CONF; then
     rm $CONF
 fi
-cp /var/www/html/conf.php $CONF
+cp /var/www/html/metrics/conf.php $CONF
 sed -i 's/Server_1/'${S_NAME}'/' $CONF
 sed -i 's/server1.example.com/'${S_HOST}'/' $CONF
 sed -i 's/3333/'${S_PORT}'/' $CONF
