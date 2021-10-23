@@ -38,10 +38,12 @@ class json_parser
 
 		$this->miner_data_results = (object)[];
 
-		foreach ($this->server_list as $name => $server) {
+		foreach ($this->server_list as $name => $server) 
+		{
 			$miner_data = (object)[];
 
-			if ($this->miner_status->{$name} == 1) {
+			if ($this->miner_status->{$name} == 1) 
+			{
 				$socket = fsockopen(gethostbyname($server->hostname), $server->port, $err_code, $err_str);
 
 				if ($server->password != null) {
@@ -54,14 +56,17 @@ class json_parser
 
 				fputs($socket, $data);
 				$buffer = null;
-				while (!feof($socket)) {
+				while (!feof($socket)) 
+				{
 					$buffer .= fgets($socket, $server->port);
 				}
-				if ($socket) {
+				if ($socket) 
+				{
 					fclose($socket);
 				}
 
 				$response = json_decode($buffer);
+				
 				$result = $response->result;
 
 				$miner_info = explode(' - ', $result[0]);
@@ -73,6 +78,9 @@ class json_parser
 				$offset = new DateTime('@' . $minutes * 60);
 				$diff = $zero->diff($offset);
 				$miner_data->uptime = $diff->format('%ad %hh %im');
+				$miner_data->uptime_raw = $result[1];
+				$miner_data->hostname = $server->hostname;
+				$miner_data->port = $server->port;
 				$hashrate_stats = explode(';', $result[2]);
 				$card_hashrate_stats = explode(';', $result[3]);
 				$fan_and_temps = explode(";", $result[6]);
@@ -88,7 +96,8 @@ class json_parser
 				];
 
 				$miner_data->card_stats = [];
-				foreach ($card_hashrate_stats as $key => $card_hashrate_stat) {
+				foreach ($card_hashrate_stats as $key => $card_hashrate_stat) 
+				{
 					$val = $key * 2;
 					$miner_data->card_stats[] = (object)[
 						'hashrate' => round($card_hashrate_stat / 1000, 2),
@@ -98,14 +107,13 @@ class json_parser
 				}
 
 				$temp_sum = 0;
-				foreach ($miner_data->card_stats as $card_stat) {
+				foreach ($miner_data->card_stats as $card_stat) 
+				{
 					$temp_sum += $card_stat->temp;
 				}
 				$miner_data->temp_av = round($temp_sum / sizeof($miner_data->card_stats));
 
-				if (is_numeric($server->power_usage) && is_numeric($server->power_cost) && is_numeric($server->pool_fee)) {
-					$miner_data->profitability = $this->get_profit_stats_from_api($miner_data->stats->hashrate, $miner_data->coin, $server->power_usage, $server->power_cost, $server->pool_fee);
-				}
+
 			}
 
 			$this->miner_data_results->{$name} = $miner_data;
@@ -117,46 +125,6 @@ class json_parser
 		$this->get_farm_stats();
 	}
 
-
-	public function show_temp_warning($value, $append)
-	{
-
-		if ($value >= $this->gpu_temp_red) {
-			return "<div class='red-alert' style='display: inline'>$value$append</div>";
-		} else if ($value >= $this->gpu_temp_yellow) {
-			return "<div class='yellow-alert' style='display: inline'>$value$append</div>";
-		} else {
-			return $value . $append;
-		}
-
-	}
-
-	public function show_fan_warning($value, $append)
-	{
-
-		if ($value >= $this->gpu_fan_red) {
-			return "<div class='red-alert' style='display: inline'>$value$append</div>";
-		} else if ($value >= $this->gpu_fan_yellow) {
-			return "<div class='yellow-alert' style='display: inline'>$value$append</div>";
-		} else {
-			return $value . $append;
-		}
-
-	}
-
-	public function show_profit($value)
-	{
-		$stripped_value = str_replace("$", '', $value);
-
-		if ($stripped_value > 0) {
-			$class = "stats__value--positive";
-		} else {
-			$class = "stats__value--negative";
-		}
-
-		return "<div class='" . $class . "' style='display: inline'>$value</div>";
-
-	}
 
 	private function check_server_availability()
 	{
@@ -192,29 +160,7 @@ class json_parser
 		return json_decode(json_encode($array));
 	}
 
-	private function get_profit_stats_from_api($hashrate, $coin, $power_usage, $power_cost, $pool_fee)
-	{
-		$ch = curl_init();
 
-		if ($coin == 'ETC') {
-			$coin_code = '162';
-		} else {
-			$coin_code = '151';
-		}
-
-		$url = "https://whattomine.com/coins/" . $coin_code . ".json?hr=" . $hashrate . "&p=" . $power_usage . "&fee=" . $pool_fee . "&cost=" . $power_cost . "&hcost=0.0&commit=Calculate";
-
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-		$result = curl_exec($ch);
-		curl_close($ch);
-
-		$json_response = json_decode($result);
-
-		return $json_response;
-	}
 
 }
 
